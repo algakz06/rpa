@@ -3,24 +3,7 @@ version: "3"
 # volumes:
 #   db:
 #   logs:
-name: rpa_backend
 services:
-  traefik:
-    image: "traefik:v2.10"
-    container_name: "traefik"
-    command:
-      #- "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./ssl:/ssl"
-
   db:
     image: postgres:14
     restart: always
@@ -50,11 +33,32 @@ services:
     depends_on:
       - db
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.api.loadbalancer.server.port=3333"
-      - "traefik.http.routers.api.rule=Host(`algakz.itatmisis.ru`)"
-      #- "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls=true"
-      - "traefik.http.routers.api.tls.certresolver=letsEncrypt"
+      # Enable Traefik for this specific "backend" service
+      - traefik.enable=true
+      # Define the port inside of the Docker service to use
+      - traefik.http.services.app.loadbalancer.server.port=80
+      # Make Traefik use this domain in HTTP
+      - traefik.http.routers.app-http.entrypoints=http
+      - traefik.http.routers.app-http.rule=Host(`algakz.itatmisis.ru`)
+      # Use the traefik-public network (declared below)
+      - traefik.docker.network=traefik-public
+      # Make Traefik use this domain in HTTPS
+      - traefik.http.routers.app-https.entrypoints=https
+      - traefik.http.routers.app-https.rule=Host(`algakz.itatmisis.ru`)
+      - traefik.http.routers.app-https.tls=true
+      # Use the "le" (Let's Encrypt) resolver
+      - traefik.http.routers.app-https.tls.certresolver=le
+      # https-redirect middleware to redirect HTTP to HTTPS
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+      # Middleware to redirect HTTP to HTTPS
+      - traefik.http.routers.app-http.middlewares=https-redirect
+      - traefik.http.routers.app-https.middlewares=admin-auth
+    networks:
+      # Use the public network created to be shared between Traefik and
+      # any other service that needs to be publicly available with HTTPS
+      - traefik-public
 
-
+  networks:
+    traefik-public:
+      external: true
