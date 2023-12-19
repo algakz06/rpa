@@ -22,11 +22,10 @@ async def check():
 
 @router.get("/indexes")
 async def get_active_indexes(
-    date: str,
     db: Session = Depends(get_db),
 ):
     """
     Get active indexes
     """
-    indexes = crud.get_indexes(db, date=date)
+    indexes = crud.get_indexes(db)
     return indexes
