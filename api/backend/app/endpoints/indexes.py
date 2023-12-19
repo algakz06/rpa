@@ -28,4 +28,6 @@ async def get_active_indexes(
     Get active indexes
     """
     indexes = crud.get_indexes(db)
-    return indexes
+    return {
+        "indexes": indexes,
+    }
