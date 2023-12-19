@@ -50,9 +50,9 @@ services:
       - db
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.api-algakz.loadbalancer.server.port=3333"
-      - "traefik.http.routers.api-algakz.rule=Host(`algakz.itatmisis.ru`)"
-      - "traefik.http.routers.api-algakz.entrypoints=websecure"
-      - "traefik.http.routers.api-algakz.tls=true"
+      - "traefik.http.services.api.loadbalancer.server.port=3333"
+      - "traefik.http.routers.api.rule=Host(`algakz.itatmisis.ru`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls=true"
 
 
