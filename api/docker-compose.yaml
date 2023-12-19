@@ -5,6 +5,21 @@ version: "3"
 #   logs:
 name: vtb_backend
 services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   db:
     image: postgres:14
     restart: always
@@ -35,9 +50,9 @@ services:
       - db
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.frontend-algakz.loadbalancer.server.port=3333"
-      - "traefik.http.routers.frontend-algakz.rule=Host(`algakz.itatmisis.ru`)"
-      - "traefik.http.routers.frontend-algakz.entrypoints=websecure"
-      - "traefik.http.routers.frontend-algakz.tls=true"
+      - "traefik.http.services.api-algakz.loadbalancer.server.port=3333"
+      - "traefik.http.routers.api-algakz.rule=Host(`algakz.itatmisis.ru`)"
+      - "traefik.http.routers.api-algakz.entrypoints=websecure"
+      - "traefik.http.routers.api-algakz.tls=true"
 
 

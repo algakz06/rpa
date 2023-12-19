@@ -12,7 +12,9 @@ from app.core.dependencies import get_db
 from app.core import crud
 from app.config import settings
 
-router = APIRouter(
-    prefix="/user",
-    tags=["user"],
-)
+router = APIRouter()
+
+
+@router.get('/check')
+async def check():
+    return 'OK'
