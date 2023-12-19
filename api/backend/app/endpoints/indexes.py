@@ -15,6 +15,18 @@ from app.config import settings
 router = APIRouter()
 
 
-@router.get('/check')
+@router.get("/check")
 async def check():
-    return 'OK'
+    return "OK"
+
+
+@router.get("/indexes")
+async def get_active_indexes(
+    date: str,
+    db: Session = Depends(get_db),
+):
+    """
+    Get active indexes
+    """
+    indexes = crud.get_indexes(db, date=date)
+    return indexes

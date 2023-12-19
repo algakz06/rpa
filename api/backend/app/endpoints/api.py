@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.endpoints.auth import router as auth_router
+from app.endpoints.indexes import router as indexes_router
 
 
 router = APIRouter(
@@ -8,4 +8,4 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-router.include_router(auth_router)
+router.include_router(indexes_router)
