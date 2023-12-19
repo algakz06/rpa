@@ -3,7 +3,7 @@ version: "3"
 # volumes:
 #   db:
 #   logs:
-name: vtb_backend
+name: rpa_backend
 services:
   traefik:
     image: "traefik:v2.10"
@@ -19,6 +19,7 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./ssl:/ssl"
 
   db:
     image: postgres:14
@@ -52,7 +53,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.services.api.loadbalancer.server.port=3333"
       - "traefik.http.routers.api.rule=Host(`algakz.itatmisis.ru`)"
-      - "traefik.http.routers.api.entrypoints=websecure"
+      #- "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=letsEncrypt"
 
 
